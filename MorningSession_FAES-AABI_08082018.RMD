@@ -1,0 +1,484 @@
+---
+title: "R basics - Morning Session"
+author: "FAES-AABI"
+date: "August 8, 2018"
+output:
+  html_document:
+    df_print: paged
+    toc: yes
+    number_sections: no
+  
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=TRUE,tidy=TRUE, dpi=300)
+knitr::opts_chunk$set(warning=FALSE,message=FALSE)
+```
+
+
+## 2.3. Programming with R
+R programming consists of methods for manipulation of data stored in objects (variables). The key components of R language environment are:  
+
+- Variables/Objects
+- Operators
+- Conditions
+- Loops
+- Functions
+- Models
+- Scripts
+
+### 2.3.1 Variables/Objects  
+A variable is a symbolic identifier that holds particular data (reserved memory locations).  Variables can hold different types of values, i.e., integer (1,2,3), numeric (0.1,2.5,3e-11), complex (3+2i), character ('red','blue'), and logical (TRUE, FALSE), which are the five basic data classes in R ("atomic classes"). The variables are assigned with R-objects that become the data type of a variable. Based on the data type of a variable, the operating system allocates memory and decides what can be stored in the reserved memory. Most frequently used R-objects are:  
+- Vectors  
+- Matrices  
+- Data Frames  
+- Factors  
+- Lists  
+
+## Rules for proper variable names
+- can be a combination of letters, digigts, period {.} and underscore {_}
+- must start with a letter or a period; if it starts with a period, it cannot be followed by a digit
+- operators like {* - + < > = & | %}, punctuation like {( ) { } , ; [ ]}, the comment character {#} or reserved words like {TRUE FALSE NULL NA} cannot be used as identifiers  
+
+Valid: var_name, .varName_1, varname, VAR  
+Invalid: .1name, TRUE, _varName, 1varname, var_name%, 'var Name'
+
+Note: When data are read into R and any column names are not valid, R will change them by prefixing {X} when the first position is not valid and replacing each invalid character with a {.}; the result can be checked with the *make.names()* function, i.e., make.names('100*X (%)')
+
+## Variable assignment
+Variables can be assigned values using either the {leftward}, {rightward}, or {equal to} operator. Values can be output by typing the variable name into the R console. Alternatively, *print()* or *cat()* can be used to combine additional components or to allow printing from within a sourced script.
+
+
+```{r}
+# leftward operator
+var_1 <- 5
+
+# equal to operator
+var_1 = 5
+
+# rightward operator
+5 -> var_1
+
+# output variable values
+var_1
+print(var_1)
+cat('Variable (1) =', var_1, '\n')
+
+# assignment and output
+(var_1 = 5)
+
+```
+## A. Vectors
+A vector in R is a sequence of values. Special cases of vectors are scalars (vectors of length 1) and empty vectors. Function *c()* concatenates elements of a vector.
+
+```{r}
+# Create a numeric vector and output assigned variable values
+x_1 = c(2, 5, 6, 10)
+print(x_1)
+
+# Create a character vector and output asigned variable values
+x_2 = c('red','blue','blue','orange')
+print(x_2)
+
+# Check class
+class(x_1)
+class(x_2)
+
+# check length
+length(x_1)
+length(x_2)
+
+# calculate mean of numeric vector
+(mx1 = mean(x_1))
+
+# check if there are duplicated values
+duplicated(x_2)
+any(duplicated(x_2))
+
+# list unique values
+unique(x_2)
+
+# table values
+table(x_2)
+
+# summarize values
+print(summary(x_1))
+print(summary(x_2))
+
+# check attributes and assign names to values of the numeric vector
+attributes(x_1)
+names(x_1) = c('c1','c2','c3','c4')
+print(x_1)
+attributes(x_1)
+
+# slice a vector of length 1 (scalar) by index or name
+(s_1 = x_1[4])
+(s_1 = x_1['c4'])
+
+# create empty vectors and check their classes
+e_0 = NULL
+print('e_0: values, class, length')
+e_0; class(e_0); length(e_0)
+
+e_3 = vector(mode='numeric', length=3)
+print('e_3: values, class, length')
+e_3; class(e_3); length(e_3)
+
+c_0 = vector(mode='character')
+print('c_0: values, class, length')
+c_0; class(c_0); length(c_0)
+
+```
+## B. Matrices
+A matrix in R is a collection of data values arranged in a two-dimensional table with rows and columns as the 1st and 2nd dimension, respectively. All columns in a matrix have to be of the same type (.e., if a mixture of numeric and character values are given, R assigns character mode to all the values). Matrices with numeric elements are mostly used though.
+
+```{r}
+# create a matrix variable (numeric), specifying number of rows, columns, and fill dimension)
+values = 1:9
+names(values) = paste('v', 1:length(values), sep='.')
+
+m_1 = matrix( values, nrow = 3, ncol = 3, byrow = TRUE )
+print(m_1)
+
+m_2 = matrix( values, nrow = 3, ncol = 3, byrow = FALSE )
+print(m_2)
+
+# matrix length and names
+length(m_1)
+names(m_1)
+names(m_1) = names(values)
+
+# 2-way dimensions
+nrow(m_1)
+ncol(m_1)
+dim(m_1)
+
+# dimnames
+rownames(m_1) = paste('row', 1:nrow(m_1), sep='.')
+colnames(m_1) = paste('col', 1:ncol(m_1), sep='.')
+m_1
+dimnames(m_1)
+
+# summary
+summary(m_1)
+str(m_1)
+
+# calculate total mean, mean by rows or columns
+mt=mean(m_1)
+mt
+mr = rowMeans(m_1)
+print(mr)
+mc = colMeans(m_1)
+print(mc)
+
+# slice matrix
+m_1a = m_1[1:2, 2:3]
+m_1a
+m_1b = m_1[, c('col.3','col.2')]
+m_1b
+
+# create matrix from numeric and character values
+mix = c(1:6, 'A','B','C')
+m_2 = matrix(mix, nrow =3, ncol=3, byrow=TRUE)
+m_2
+
+# check class and mode of numeric and character matrix
+class(m_1)
+class(m_2)
+mode(m_1)
+mode(m_2)
+
+```
+
+## C. Data Frames
+A data frame in R is a two-dimensional table-like structure with rows and columns, but with different properties than a matrix. In a data frame each column is a variable, and variables can be of different type, that is of numeric, character or factor type (explained below in 6.6). When data are read into R from external sources they are assigned data frame type by default.  
+
+Example data frame:
+Boeckmann, Sheiner and Beal (1994) report data from a study by Dr. Robert Upton of the kinetics of the anti-asthmatic drug theophylline. Twelve subjects were given oral doses of theophylline then serum concentrations were measured at 11 time points over the next 25 hours. *help(Theoph)*
+
+```{r}
+# load internal R data and assign a simpler object
+data(Theoph)
+df = data.frame(Theoph)
+
+# check data type and properties
+str(df)
+class(df)
+dim(df)
+length(df)
+names(df)
+colnames(df)
+head(df)
+
+# slice data frame
+class(df[,5])
+class(df[,5, drop=FALSE])
+
+df[1:5,'conc']
+df$conc[1:5]
+
+# subset data frame by a condition
+df_1 = subset(df, df$Subject == 1)
+
+# add new variable
+#.measuremnt number
+df_1$num = 1:nrow(df_1)
+#. difference to baseline at time 0
+df_1 = data.frame(df_1, dif=df_1$conc - df_1$conc[1])
+
+# plot variables
+plot(df_1$Time, df_1$conc, type='l', main='Patient #1')
+
+```
+
+## D. Factors
+A factor in R is a categorical variable that stores unique values of the variable as levels (integers or strings). Factors help with grouping of data and are used in statistical modeling.
+
+```{r}
+f_1 = rep(1:4, 4)
+f_1
+f_1 = factor(f_1)
+f_1
+
+f_2 = rep(c('G1','G2','G3','Control'), 4)
+f_2
+f_2 = factor(f_2)
+f_2
+
+x = rnorm(16, mean=20, sd=2.5)
+mx = tapply(x, f_2, mean)
+mx
+
+```
+
+## E. Lists
+A list in R is an object which can store data of different types and dimensions.
+
+```{r}
+# create a list
+l_1 = list(data1=x_1, data2=c(F,F,T), data3=m_1, data4=df_1[1:4,])
+l_1
+
+# subset list
+l_2 = l_1[1]
+class(l_2)
+
+# access variable in a list
+dat = l_1[[1]]
+dat = l_1$data1
+class(dat)
+
+# split data frame
+list_1 = split(df, paste(df$Subject))[1:2]
+list_1
+
+```
+
+#	2.3.2. Operators
+Operators are symbols representing specific mathematical or logical operations performed on data. R can perform basic operations like addition, multiplication, division etc., along with a host of more advanced manipulations. Several operations work similarly on different types of variables.
+
+
+```{r}
+
+## Arithmetic operators
+
+# add two numbers
+20+30
+
+# multiply two numbers stored in variables s1, s2
+s1 = 20; s2 = 30
+s1*s2
+
+# divide two vectors v1,v2
+v1 = sample(5); v2=sample(5)
+v1; v2; v1/v2
+
+# element wise operation
+sqrt(v1); v1^3
+
+# sum all elements of a vector
+sum(v1)
+cumsum(v1)
+
+# apply an operation on row/columns of a matrix/data.frame
+m_1
+apply(m_1, 2, log2)
+apply(m_1, 1, log2)
+
+## Logical operators
+
+# compare elements of two variables (greater than or equal to)
+v1 >= v2
+
+# OR/AND, not equal
+v1 >= 2 | v2>=3
+v1 >= 2 & v2 != 3
+
+# is TRUE/FALSE
+any(v1<2)
+all(v1<2)
+!isTRUE(2>0)
+```
+
+#	2.3.3 Conditions
+Condition test if a statement is true or false
+
+```{r}
+#check if s1 is greater than s2
+#if the condition is true, assign a value for s3 as s2-1
+#if the condition is false, assign a value for s3 as s2+1
+
+if (s1 > s2) { 
+  s3 = s2-1 
+  } else { 
+  s3 = s2+1 
+}
+s3
+
+# assign category based on a condition with ifelse() function
+v3 = ifelse(v1 > v2, 'red', 'blue')
+v3
+
+```
+
+# 2.3.4 Loops
+Loops are used to do a particular operation on a set of data, without having to manually perform that actions multiple times
+
+```{r}
+# the for loop goes over each number from 1 to 10, assigning the current number in the range to i, for every iteration. A cat() statement is then executed for each of the interation
+for(i in 1:10)
+{
+  cat(i, ', ', sep='')
+}
+
+# the same for loop but with an addition statement
+for(i in 1:10)
+{
+  xfor=i+1
+  cat(xfor, ', ', sep='')
+}
+```
+
+# 2.3.5 Functions
+Functions are the crucial part of R. Functions are a set of in-built commands that perform certain standard tasks. For example, 'print' is a function that prints the values of the variable. 'sum' is a function that sums up the values that are passed to it, etc. Below are some of the important functions to remember;
+
+- *help()*
+-	*example()*
+-	*demo()*
+-	*vignette()*
+-	*args()*
+-	*length()*
+-	*range()*
+-	*toupper()*
+-	*tolower()*
+-	*mean()*
+-	*median()*
+-	*sum()*
+-	*print()*
+-	*dim()*
+-	*mode()*
+-	*class() *
+-	More... http://www.columbia.edu/~cjd11/charles_dimaggio/DIRE/resources/R/rFunctionsList.pdf  
+
+You can also write your own functions, for chunks of codes that you repeatedly use. This way, instead of typing all of the lines of the code every time, you could just call the function and be done with that. It's like magically using a single word to run a bunch of lines of code.
+
+```{r fig.width=12, fig.height=12}
+#write a function plot.patient() to produce a pharmacokinetics plot for each patient in the Theoph data set
+
+plot.patient <- function(input=NULL, colo='black', ...){
+  
+  if(is.null(input)){
+    data("Theoph")
+    df = Theoph
+  } else {
+    df = input
+  }
+  
+  patientID = paste(df[,'Subject'])
+  list_df = split(df, patientID)
+  
+  par(mfrow=c(4,3))
+  for(i in 1:length(list_df)){
+    x = list_df[[i]]$Time
+    y = list_df[[i]]$conc
+    plot(x,y, type='o', pch=16, col=colo, xlab='time (hrs)', ylab='blood (mg/L)')
+    title(paste('PatientID =',i))
+}
+}
+
+#plot.patient()
+plot.patient(colo='blue')
+
+```
+
+2.4. Scripting
+Scripting is a task of placing a bunch of commands that perform individual actions, in a single file and executing all of those commands by running that one single file in a automated way.
+Below is an example script that reads the interactions files, grabs a subset of the file content, filters it for the score, plots a graph of the score and writes out a new file with the filtered set of interaction.
+Place all of these commands in one single text file (using a text editor like notepad or textedit), save it as a script (use .r or no extension).
+
+```{r}
+#read the input data
+stat1_interactions_new <- read.csv("~/stat1_interactions.tsv",sep="\t")
+
+#extract the first two and the last column
+statsmallnew <- stat1_interactions_new[,c(1,2,15)]
+
+#extract the interactions with more than 0.5 score
+statsmallnewfiltered <- subset(statsmallnew, combined_score >= 0.5)
+
+#write the filtered interactions in to a file
+write.table(statsmallfiltered, "statsmallfiltered.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+#print the score distribution graph
+png('statsmallnew.png')
+plot(statsmallnew$combined_score)
+dev.off()
+
+message("Script ran successfully, all outputs are in the working director")
+
+#If the above script is named as "interaction-data-process-script.r", run the script in the console using the following command;
+#source('~/interaction-data-process-script.r')
+```
+
+
+### 2.5 RMarkdown
+*RMarkdown* allows to create documents that serve as a neat and reproducible documentation of an analysis. *RMarkdown* is a very simple 'markup' language which provides methods for creating documents with headers, images, links etc. from plain text files, while keeping the code alongside its output (graphs, tables, etc.) with conventional text to explain it, a bit like a notebook. Markdown documents can be converted to other file types like .html , .pdf, or .doc
+
+**To create a new RMarkdown file (.Rmd), select File -> New File -> R Markdown in RStudio, then choose the file type (HTML here)**
+
+- Table
+```{r }
+load("C://Users/YO/Documents/example_data.RData")
+tab = dat_chol
+
+library(DT)
+datatable(tab, colnames=names(tab), options = list(scrollX = FALSE, keys = TRUE, pageLength = 10),  caption=paste("Table 1"), rownames = TRUE)
+
+```
+
+- Figure
+```{r fig.width=2, fig.height=2, dpi=300}
+load("C://Users/YO/Documents/data_shapes.rda")
+dat = dat_wide2
+cormat = cor(dat)
+library(heatmaply)
+heatmaply(cormat, cexRow = 0.5, cexCol=0.5)
+```
+
+#### 2.5.1 Code chunk instructions
+
+#### 2.5.2 Formatting text
+
+*Italic*
+
+**Bold**
+
+* Unordered list item
+
+1. Ordered list item
+
+[Link to RStudio RMarkdown](https://rmarkdown.rstudio.com/index.html)
+
+
+
+
